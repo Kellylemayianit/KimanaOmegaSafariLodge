@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Grid with Modal and Pagination</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+        }
+        .product-card img {
+            max-width: 100%;
+            height: auto;
+        }
+        .product-card h3 {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+        .product-card p {
+            color: #555;
+        }
+        .product-card button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Our Products</h1>
+<div class="product-grid" id="productGrid">
+    <!-- Product cards will be dynamically inserted here -->
+</div>
+
+<div class="pagination" id="pagination">
+    <button onclick="prevPage()">Prev</button>
+    <button onclick="nextPage()">Next</button>
+</div>
+
+<!-- Modal for Product Details -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h3 id="modalTitle"></h3>
+        <p id="modalDescription"></p>
+    </div>
+</div>
+
+<script>
+    const products = [
+        { id: 1, name: "Product 1", description: "Description of Product 1.", img: "product1.jpg" },
+        { id: 2, name: "Product 2", description: "Description of Product 2.", img: "product2.jpg" },
+        { id: 3, name: "Product 3", description: "Description of Product 3.", img: "product3.jpg" },
+        { id: 4, name: "Product 4", description: "Description of Product 4.", img: "product4.jpg" },
+        { id: 5, name: "Product 5", description: "Description of Product 5.", img: "product5.jpg" },
+        { id: 6, name: "Product 6", description: "Description of Product 6.", img: "product6.jpg" },
+        // Add more products as needed
+    ];
+    let currentPage = 1;
+    const itemsPerPage = 3;
+
+    function displayProducts() {
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const productGrid = document.getElementById("productGrid");
+        productGrid.innerHTML = "";
+
+        products.slice(start, end).forEach(product => {
+            const card = document.createElement("div");
+            card.className = "product-card";
+            card.innerHTML = `
+                <img src="${product.img}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>${product.description}</p>
+                <button onclick="openModal(${product.id})">View Details</button>
+            `;
+            productGrid.appendChild(card);
+        });
+    }
+
+    function openModal(productId) {
+        const product = products.find(p => p.id === productId);
+        document.getElementById("modalTitle").innerText = product.name;
+        document.getElementById("modalDescription").innerText = product.description;
+        document.getElementById("myModal").style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+    }
+
+    function nextPage() {
+        if (currentPage < Math.ceil(products.length / itemsPerPage)) {
+            currentPage++;
+            displayProducts();
+        }
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            displayProducts();
+        }
+    }
+
+    // Initial display
+    displayProducts();
+</script>
+
+</body>
+</html>
